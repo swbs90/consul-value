@@ -1,0 +1,59 @@
+client:
+  enabled: false
+connectInject:
+  consulNamespaces:
+    mirroringK8S: true
+  enabled: true
+  replicas: 1
+controller:
+  enabled: true
+dns:
+  enableRedirection: true
+  enabled: true
+global:
+  enableConsulNamespaces: true
+  enabled: true
+  enterpriseLicense:
+    secretKey: key
+    secretName: license
+  image: hashicorp/consul-enterprise:1.16.0-ent
+  imageEnvoy: envoyproxy/envoy:v1.25.9
+  imageK8S: hashicorp/consul-k8s-control-plane:1.2.2
+  imageConsulDataplane: hashicorp/consul-dataplane:1.1.3
+  metrics:
+    enabled: true
+server:
+  enabled: true
+  replicas: 3
+ui:
+  enabled: true
+  service:
+    additionalSpec: "loadBalancerClass: service.k8s.aws/nlb"
+    annotations: |
+      "service.beta.kubernetes.io/aws-load-balancer-nlb-target-type": "instance"
+      "service.beta.kubernetes.io/aws-load-balancer-ip-address-mode": ipv4
+      "service.beta.kubernetes.io/aws-load-balancer-type": "external"
+      "service.beta.kubernetes.io/load-balancer-source-ranges": 0.0.0.0/0
+      "service.beta.kubernetes.io/aws-load-balancer-scheme": "internet-facing"
+      "service.beta.kubernetes.io/aws-load-balancer-subnets": subnet-02ae70599c0195552, subnet-0c0f2aba47ef7a06d, subnet-0799a6039655eff55
+    enabled: true
+    port:
+      http: 80
+      https: 443
+    type: LoadBalancer
+ingressGateways:
+  defaults:
+    replicas: 1
+    service:
+      additionalSpec: "loadBalancerClass: service.k8s.aws/nlb"
+      ports:
+        - port: 8080
+      annotations: |
+        "service.beta.kubernetes.io/aws-load-balancer-nlb-target-type": instance
+        "service.beta.kubernetes.io/aws-load-balancer-ip-address-mode": ipv4
+        "service.beta.kubernetes.io/aws-load-balancer-type": external
+        "service.beta.kubernetes.io/load-balancer-source-ranges": 0.0.0.0/0
+        "service.beta.kubernetes.io/aws-load-balancer-scheme": "internet-facing"
+        "service.beta.kubernetes.io/aws-load-balancer-subnets": subnet-02ae70599c0195552, subnet-0c0f2aba47ef7a06d, subnet-0799a6039655eff55
+      type: LoadBalancer
+  enabled: true
